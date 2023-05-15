@@ -1,9 +1,7 @@
 package com.projectSena.sena.models
 
-class User {
+class getUserModel {
     var status: String=""
     var message: String=""
-    var accessToken: String=""
-    var name: String=""
     var user: User = User()
 }
