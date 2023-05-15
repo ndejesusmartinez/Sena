@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Sena</string>
+    <string name="nav_open">nav_open</string>
+    <string name="nav_close">nav_close</string>
+    <string name="title_activity_navigation">activity_Navigation</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+</resources>
