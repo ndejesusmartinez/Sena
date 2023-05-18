@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/black">
 
         <RelativeLayout
             android:id="@+id/actionBar"
@@ -36,7 +37,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/image"
                 android:text="@string/Dashboard"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

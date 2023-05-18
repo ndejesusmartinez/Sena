@@ -32,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
         login = findViewById(R.id.login)
         login.setOnClickListener{
             val queue = Volley.newRequestQueue(applicationContext)
-            val url: String = utils.apiUrl + "/login"
+            val url: String = utils.apiUrl + "/api/v1/login"
 
             val requestBody: String = "email=" + email.text + "&Password=" + Password.text
 
