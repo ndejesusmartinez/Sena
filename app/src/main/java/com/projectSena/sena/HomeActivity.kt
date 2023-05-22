@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -17,11 +18,14 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
+import com.projectSena.sena.models.GetUserResponse
 import com.projectSena.sena.models.User
 import com.projectSena.sena.models.getUserModel
+import com.projectSena.sena.utils.LoadingDialog
 import com.projectSena.sena.utils.mySharedPreference
 import com.projectSena.sena.utils.utils
 import org.json.JSONArray
+import java.nio.charset.Charset
 
 class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
 
@@ -29,11 +33,16 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
     lateinit var navigationView: NavigationView
     lateinit var sharedPreference: mySharedPreference
+    lateinit var getUserResponse: GetUserResponse
     lateinit var user: User
+
+    private lateinit var loadingDialog: LoadingDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        loadingDialog = LoadingDialog(this)
 
         sharedPreference = mySharedPreference()
 
@@ -48,36 +57,42 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         navigationView = findViewById(R.id.navigationView)
         navigationView.setNavigationItemSelectedListener(this)
 
-        getData()
+        getUser()
     }
 
     fun getData(){
         val queue = Volley.newRequestQueue(this)
-        val url = utils.apiUrl + "getUser"
-
+        //val url: String = utils.apiUrl + "/api/v1/getUser"
+        val url = sharedPreference.getAPIURL(this)+"/api/v1/getUser"
+        val requestBody = ""
         val stringRequest: StringRequest = object : StringRequest(
             Method.POST, url,
             Response.Listener { response ->
                 val getUserModel: getUserModel = Gson().fromJson(response, getUserModel::class.java)
+                Log.i("mylog", "E:" + getUserModel)
                 if (getUserModel.status == "success"){
-                    user = getUserModel.user
+                    Log.i("mylog", "status ok:" + getUserModel.status)
+                    /*user = getUserModel.user
                     val headerView: View = navigationView.getHeaderView(0)
                     val name: TextView = headerView.findViewById(R.id.name)
                     name.text = user.name
 
-                    getContactsPermission()
+                    getContactsPermission()*/
                 }else{
                     utils.showAlert(this, "Error", getUserModel.message)
                 }
             },
             Response.ErrorListener { error ->
-                
+                Log.i("mylog", "ErrorListener2: "+error.toString())
             }
         ){
             override fun getHeaders(): MutableMap<String, String> {
                 val headers: HashMap<String, String> = HashMap()
-                headers["Authorization"] = "Bearer" + sharedPreference.getAccessToken(applicationContext)
+                headers["Authorization"] = sharedPreference.getAccessToken(applicationContext)
                 return headers
+            }
+            override fun getBody(): ByteArray {
+                return requestBody.toByteArray(Charset.defaultCharset())
             }
         }
         queue.add(stringRequest)
@@ -119,31 +134,78 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     fun doLogout(){
         val queue = Volley.newRequestQueue(this)
-        val url = utils.apiUrl + "/logout"
-
+        val url = sharedPreference.getAPIURL(this) + "/api/v1/logout"
+        val requestBody = ""
         val stringRequest: StringRequest = object : StringRequest(Method.POST, url, Response.Listener { response ->
             val generalResponse: GeneralResponse = Gson().fromJson(response, GeneralResponse::class.java)
             utils.showAlert(this, "Logout", generalResponse.message, Runnable {
                 if (generalResponse.status == "success"){
+                    Log.i("myLog", "OK = "+ generalResponse.status)
                     sharedPreference.removeAccessToken(this,)
                     startActivity(Intent(this, LoginActivity::class.java))
                     finish()
                 }
             })
-        }, Response.ErrorListener { error ->  
+        }, Response.ErrorListener { error ->
+            Log.i("myLog", "error = " + error)
+            utils.showAlert(this,"Error: "+ error)
 
         }){
             override fun getHeaders(): MutableMap<String, String> {
                 val headers: HashMap<String, String> = HashMap()
-                headers["Authorization"] = "Bearer" +sharedPreference.getAccessToken(applicationContext)
+                headers["Authorization"] = sharedPreference.getAccessToken(applicationContext)
                 return headers
+            }
+            override fun getBody(): ByteArray {
+                return requestBody.toByteArray(Charset.defaultCharset())
             }
         }
         queue.add(stringRequest)
     }
 
+    fun getUser() {
+        loadingDialog.show()
+
+        val queue = Volley.newRequestQueue(this)
+        val url = sharedPreference.getAPIURL(this) + "/api/v1/getUser"
+
+        val requestBody = ""
+        val stringReq: StringRequest =
+            object : StringRequest(
+                Method.POST, url,
+                Response.Listener { response ->
+                    getUserResponse = Gson().fromJson(response, GetUserResponse::class.java)
+                    if (getUserResponse.status == "success") {
+                        loadingDialog.dismiss()
+                        utils.showAlert(this, "Ingreso correctamente", "Usuario: "+getUserResponse.user.name)
+                    } else {
+                        loadingDialog.dismiss()
+                        utils.showAlert(this, "Error", getUserResponse.message)
+                    }
+                },
+                Response.ErrorListener { error ->
+                    Log.i("myLog", "error = " + error)
+                    utils.showAlert(this, "ErrorListener", error.toString())
+                }
+            ) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["Authorization"] =
+                        sharedPreference.getAccessToken(applicationContext)
+                    //Log.i("myLog", "headers:= " + headers)
+                    return headers
+                }
+
+                override fun getBody(): ByteArray {
+                    return requestBody.toByteArray(Charset.defaultCharset())
+                }
+            }
+        queue.add(stringReq)
+
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.logout){
+        if (item.itemId == R.id.nav_logout){
             doLogout()
         }
         return true
