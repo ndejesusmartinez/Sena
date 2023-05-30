@@ -2,6 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
         <item
-            android:id="@+id/logout"
-            android:title="Logout"/>
+            android:id="@+id/nav_repartos"
+            android:title="Gestion de repartos"/>
+
+        <item
+            android:id="@+id/nav_services"
+            android:title="Gestion de servicios"/>
+
+        <item
+            android:id="@+id/nav_perfile"
+            android:title="Ver mi perfil"/>
+
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Salir"/>
 </menu>

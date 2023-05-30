@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_add_service"
+        android:title="Solicitar servicios"/>
+
+    <item
+        android:id="@+id/nav_services"
+        android:title="Historial de servicios"/>
+
+    <item
+        android:id="@+id/nav_perfile"
+        android:title="Ver mi perfil"/>
+
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Salir"/>
+</menu>

@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.adnantech.chatapp_free_version.models.GeneralResponse
@@ -177,7 +178,21 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                     getUserResponse = Gson().fromJson(response, GetUserResponse::class.java)
                     if (getUserResponse.status == "success") {
                         loadingDialog.dismiss()
-                        utils.showAlert(this, "Ingreso correctamente", "Usuario: "+getUserResponse.user.name)
+                        user = getUserResponse.user
+                        val headerView: View = navigationView.getHeaderView(0)
+                        val name: TextView = headerView.findViewById(R.id.userName)
+                        name.text = user.name
+                        val role: TextView = headerView.findViewById(R.id.Role)
+                        role.text = user.role
+
+                        if(getUserResponse.user.role == "delivery"){
+                            startActivity(Intent(this,HomeActivityDelivery::class.java))
+                            finish()
+                        }
+                        if(getUserResponse.user.role == "client"){
+                            startActivity(Intent(this,HomeActivityClient::class.java))
+                            finish()
+                        }
                     } else {
                         loadingDialog.dismiss()
                         utils.showAlert(this, "Error", getUserResponse.message)
@@ -208,6 +223,14 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         if (item.itemId == R.id.nav_logout){
             doLogout()
         }
+
+        if (item.itemId == R.id.nav_perfile) {
+            startActivity(Intent(this, perfileActivity::class.java))
+        }
+        if (item.itemId == R.id.nav_usuarios){
+            startActivity(Intent(this, UsersActivity::class.java))
+        }
+
         return true
     }
 
@@ -217,4 +240,15 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         }
         return super.onOptionsItemSelected(item)
     }
+
+    /*override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("¿Deseas salir de la aplicación?")
+            .setPositiveButton("Sí") { _, _ ->
+                // Si se presiona "Sí", se cierra la aplicación
+                super.onBackPressed()
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }*/
 }

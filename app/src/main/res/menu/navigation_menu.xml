@@ -16,7 +16,7 @@
         android:title="Gestion de servicios" />
 
     <item
-        android:id="@+id/nav_premiumFeatures"
+        android:id="@+id/nav_administrar"
         android:title="administrar" />
 
     <item

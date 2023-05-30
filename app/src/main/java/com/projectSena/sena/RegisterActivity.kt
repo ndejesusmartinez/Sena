@@ -15,45 +15,44 @@ import com.projectSena.sena.utils.mySharedPreference
 import com.projectSena.sena.utils.utils
 import java.nio.charset.Charset
 
-class LoginActivity : AppCompatActivity() {
-    lateinit var Username: EditText
+class RegisterActivity : AppCompatActivity() {
+    lateinit var name: EditText
     lateinit var Password: EditText
     lateinit var email: EditText
-    lateinit var login: Button
-    lateinit var register: Button
+    lateinit var registrar: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_register)
 
-        Username = findViewById(R.id.Username)
-
+        name = findViewById(R.id.Username)
         Password = findViewById(R.id.Password)
         email = findViewById(R.id.email)
-        register = findViewById(R.id.register)
-        register.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
-        }
-        login = findViewById(R.id.login)
-        login.setOnClickListener{
-            val queue = Volley.newRequestQueue(applicationContext)
-            val url: String = utils.apiUrl + "/api/v1/login"
+        registrar = findViewById(R.id.registrar)
 
-            val requestBody: String = "email=" + email.text + "&Password=" + Password.text
+        registrar.setOnClickListener{
+            val queue = Volley.newRequestQueue(applicationContext)
+            val url: String = utils.apiUrl + "/api/v1/addUser"
+
+            val requestBody: String = "email=" + email.text + "&Password=" + Password.text + "&name=" + name.text
 
             val stringRequest: StringRequest = object: StringRequest(Method.POST, url, Response.Listener { response->
                 Log.i("myLog", response)
-                val LoginModel: LoginModel = Gson().fromJson(response,LoginModel::class.java)
+                val LoginModel: LoginModel = Gson().fromJson(response, LoginModel::class.java)
                 if (LoginModel.status == "success"){
-                    val preference: mySharedPreference = mySharedPreference()
-                    preference.setAccessToken(this, LoginModel.accessToken)
-                    startActivity(Intent(this,HomeActivity::class.java))
-                    finish()
+                    utils.showAlert(this,"Usuario creado Ccorrectamente","Inicia sesion con tus datos de registro")
+                    val accessToken: String = mySharedPreference().getAccessToken(applicationContext)
+                    if(accessToken.isEmpty()){
+                        utils.showAlert(this,"Usuario creado Ccorrectamente","Inicia sesion con tus datos de registro")
+                        startActivity(Intent(applicationContext, LoginActivity::class.java))
+                    }else{
+                        utils.showAlert(this,"Usuario creado Ccorrectamente")
+                        startActivity(Intent(applicationContext, HomeActivity::class.java))
+                    }
                 }else{
                     utils.showAlert(this,"Error", LoginModel.message)
                 }
-            }, Response.ErrorListener { error ->  
+            }, Response.ErrorListener { error ->
                 Log.i("mylog", error.toString())
             }){
                 override fun getBody(): ByteArray {

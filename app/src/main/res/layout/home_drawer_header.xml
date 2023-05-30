@@ -14,15 +14,15 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/image"
-        android:text="asd" />
+        android:text="your name" />
 
     <TextView
-        android:id="@+id/userPhone"
+        android:id="@+id/Role"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/userName"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/image"
-        android:text="123" />
+        android:text="your role" />
 
 </RelativeLayout>

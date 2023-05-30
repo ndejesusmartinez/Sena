@@ -67,9 +67,7 @@
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/etSearch"
-            tools:itemCount="5"
-            tools:listitem="@layout/single_contact" />
+            tools:itemCount="5"/>
     </RelativeLayout>
 
     <!-- this the navigation view which draws and shows the navigation drawer -->
@@ -80,6 +78,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/home_drawer_header"
-        app:menu="@menu/navigation_menu" />
+        app:menu="@menu/home_navigation_menu_client" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

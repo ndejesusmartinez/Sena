@@ -5,4 +5,6 @@ class User {
     var message: String=""
     var accessToken: String=""
     var name: String=""
+    var role: String=""
+    var email: String=""
 }
