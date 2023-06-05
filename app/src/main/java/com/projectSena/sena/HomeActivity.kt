@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.adnantech.chatapp_free_version.models.GeneralResponse
@@ -229,6 +228,10 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         }
         if (item.itemId == R.id.nav_usuarios){
             startActivity(Intent(this, UsersActivity::class.java))
+        }
+
+        if (item.itemId == R.id.nav_servicios){
+            startActivity(Intent(this, ServicesActivity::class.java))
         }
 
         return true
